@@ -1,0 +1,53 @@
+<ons-page>
+  <ons-toolbar>
+    <div class="left">
+      <ons-back-button>一覧</ons-back-button>
+    </div>
+    <div class="center task_title_label">タスク</div>
+  </ons-toolbar>
+  <div style="text-align: center; margin-top: 60px;">
+    <p>
+      <ons-input id="title" class="task_title" modifier="underbar" placeholder="タスク名" float></ons-input>
+    </p>
+    <p>
+      <textarea id="body" class="task_body textarea" rows="5" placeholder="詳細を入力してください"></textarea>
+    </p>
+    <p>
+      <ons-input id="date" class="task_date" type="date" modifier="underbar" float></ons-input>
+    </p>
+    <p style="margin-top: 30px;">
+      <ons-button id="updateTask">タスクを更新する</ons-button>
+    </p>
+  </div>
+  <script>
+    ons.getScriptPage().onShow = async function() {
+      task = this.data.task;
+      for (const key in task) {
+        let value = task.get(key);
+        if (key === 'date') {
+          value = dayjs(task.get(key).iso).format('YYYY-MM-DD');
+        }
+        $(`.task_${key}_label`).html(value);
+        $(`.task_${key}`).val(value);
+      }
+    }
+
+    async function updateTask(title, date, body) {
+    }
+
+    ons.getScriptPage().onInit = function() {
+      // タスクを更新する
+      $('#updateTask').on('click', async e => {
+        const title = $('#title').val();
+        const date = $('#date').val();
+        const body = $('#body').val();
+        try {
+          updateTask(title, date, body);
+          $('#nav')[0].popPage();
+        } catch (e) {
+          ons.notification.alert('タスクの更新に失敗しました');
+        }
+      })
+    }
+  </script>
+</ons-page>

@@ -1,0 +1,83 @@
+<ons-page>
+  <ons-toolbar>
+    <div class="center" id="form-title">タスク一覧</div>
+    <div class="right">
+      <ons-toolbar-button id="add">
+        <ons-icon icon="fa-plus"></ons-icon>
+      </ons-toolbar-button>
+    </div>
+  </ons-toolbar>
+  <p>
+    <h3>タスク一覧</h3>
+    <ons-list id="tasks">
+    </ons-list>
+  </p>
+  <script>
+    let tasks = [];
+    async function getTaskList() {
+    }
+
+    function renderTasks() {
+      const html = [];
+      let date = null;
+      for (const task of tasks) {
+        const taskDate = task.get('date').iso;
+        if (date !== taskDate) {
+          html.push(`<ons-list-header>${dayjs(taskDate).format('YYYY年MM月DD日')}</ons-list-header>`);
+          date = taskDate;
+        }
+        html.push(`
+          <ons-list-item swipeable expandable data-objectid="${task.get('objectId')}">
+            <div class="left">
+              <ons-icon icon="fa-check" class="done"></ons-icon>&nbsp;&nbsp; 
+              <ons-icon icon="fa-edit" class="edit"></ons-icon>
+            </div>
+            ${task.get('title')}
+            <div class="expandable-content">
+              ${task.get('body').replace(/\n/, '<br />')}
+            </div>
+          </ons-list-item>
+        `);
+      }
+      $('#tasks').html(html.join(''));
+    }
+   
+	  // この画面が表示される度に実行されます
+    ons.getScriptPage().onShow = async function() {
+      // 1. ログインをチェックします。ログインしていなければ login.html に遷移します
+      await getTaskList();
+      renderTasks();
+    }
+
+    function getTask(objectId) {
+      return tasks.filter(t => t.get('objectId') === objectId)[0];
+    }
+
+    ons.getScriptPage().onInit = async function() {
+      // タスクを完了させる
+      $(document).on('click', '.done', async e => {
+        // タップした対象のobjectIdを取得
+        const objectId = $(e.target).parents('ons-list-item').data('objectid');
+        // タスクオブジェクトを取得する
+        const task = getTask(objectId);
+        // ここに記述します
+        // タスクのステータスを更新する
+        // タスクを一覧データから消す
+        tasks = tasks.filter(t => t.get('objectId') !== objectId)
+        // 再描画
+        renderTasks();
+      });
+
+      // 編集画面に遷移します
+      $(document).on('click', '.edit', async e => {
+        const objectId = $(e.target).parents('ons-list-item').data('objectid');
+        const task = getTask(objectId);
+        $('#nav')[0].pushPage('edit.html', {data: {task}})
+      });
+
+      $('#add').on('click', e => {
+        $('#nav')[0].pushPage('add.html');
+      })
+    }
+  </script>
+</ons-page>
