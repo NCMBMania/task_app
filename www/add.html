@@ -20,28 +20,30 @@
     </p>
   </div>
   <script>
-    ons.getScriptPage().onShow = function() {
-      $('#date').val(dayjs().format('YYYY-MM-DD'));
-    }
+    (() => {
+      ons.getScriptPage().onShow = function() {
+        $('#date').val(dayjs().format('YYYY-MM-DD'));
+      }
 
-    ons.getScriptPage().onInit = function() {
-      $('#addTask').on('click', async e => {
-        // 変数を準備する
-        const title = $('#title').val();
-        const date = $('#date').val();
-        const body = $('#body').val();
-        try {
-          // NCMBにタスクを登録する
-          await addTask(title, date, body);
-          $('#nav')[0].popPage();
-        } catch (e) {
-          ons.notification.alert('タスクの作成に失敗しました');
-        }
-      })
-    }
+      ons.getScriptPage().onInit = function() {
+        $('#addTask').on('click', async e => {
+          // 変数を準備する
+          const title = $('#title').val();
+          const date = $('#date').val();
+          const body = $('#body').val();
+          try {
+            // NCMBにタスクを登録する
+            await addTask(title, date, body);
+            $('#nav')[0].popPage();
+          } catch (e) {
+            ons.notification.alert('タスクの作成に失敗しました');
+          }
+        })
+      }
 
-    // タスクを追加する処理です
-    async function addTask(title, date, body) {
-    }
+      // タスクを追加する処理です
+      async function addTask(title, date, body) {
+      }
+    })();
   </script>
 </ons-page>

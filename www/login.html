@@ -15,36 +15,38 @@
   </div>
 
   <script>
-    async function signInOrLogin() {
-      const userName = this.querySelector('#userName').value;
-      const password = this.querySelector('#password').value;
-      try {
-        // 1. まず登録処理を実行します。
-        await registerUser(userName, password);
-      } catch (e) {
-        // 2. それが失敗する（すでにユーザがいた場合）
-        // こともありますが、そのままログイン処理に移行します。
+    (() => {
+      async function signInOrLogin() {
+        const userName = this.querySelector('#userName').value;
+        const password = this.querySelector('#password').value;
+        try {
+          // 1. まず登録処理を実行します。
+          await registerUser(userName, password);
+        } catch (e) {
+          // 2. それが失敗する（すでにユーザがいた場合）
+          // こともありますが、そのままログイン処理に移行します。
+        }
+        // ログイン処理
+        try {
+          // 3. mBaaSへのログイン処理を実行します
+
+          // 5. 前の画面に戻ります
+          $('#nav')[0].popPage();
+        } catch (e) {
+          // 4. ログインに失敗する場合はID/パスワードが間違っている場合です。
+          ons.notification.alert('ログイン失敗しました。ユーザ名、パスワードを確認してください');
+          return false;
+        }
       }
-      // ログイン処理
-      try {
-        // 3. mBaaSへのログイン処理を実行します
 
-        // 5. 前の画面に戻ります
-        $('#nav')[0].popPage();
-      } catch (e) {
-        // 4. ログインに失敗する場合はID/パスワードが間違っている場合です。
-        ons.notification.alert('ログイン失敗しました。ユーザ名、パスワードを確認してください');
-        return false;
+      ons.getScriptPage().onInit = function() {
+        this.querySelector('#login').onclick = signInOrLogin.bind(this);
       }
-    }
 
-    ons.getScriptPage().onInit = function() {
-      this.querySelector('#login').onclick = signInOrLogin.bind(this);
-    }
+      // 新規ユーザ登録処理です
+      async function registerUser(userName, password) {
 
-    // 新規ユーザ登録処理です
-    async function registerUser(userName, password) {
-
-    }
+      }
+    })();
   </script>
 </ons-page>

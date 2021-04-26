@@ -20,34 +20,36 @@
     </p>
   </div>
   <script>
-    ons.getScriptPage().onShow = async function() {
-      task = this.data.task;
-      for (const key in task) {
-        let value = task.get(key);
-        if (key === 'date') {
-          value = dayjs(task.get(key).iso).format('YYYY-MM-DD');
+    (() => {
+      ons.getScriptPage().onShow = async function() {
+        task = this.data.task;
+        for (const key in task) {
+          let value = task.get(key);
+          if (key === 'date') {
+            value = dayjs(task.get(key).iso).format('YYYY-MM-DD');
+          }
+          $(`.task_${key}_label`).html(value);
+          $(`.task_${key}`).val(value);
         }
-        $(`.task_${key}_label`).html(value);
-        $(`.task_${key}`).val(value);
       }
-    }
 
-    async function updateTask(title, date, body) {
-    }
+      async function updateTask(title, date, body) {
+      }
 
-    ons.getScriptPage().onInit = function() {
-      // タスクを更新する
-      $('#updateTask').on('click', async e => {
-        const title = $('#title').val();
-        const date = $('#date').val();
-        const body = $('#body').val();
-        try {
-          updateTask(title, date, body);
-          $('#nav')[0].popPage();
-        } catch (e) {
-          ons.notification.alert('タスクの更新に失敗しました');
-        }
-      })
-    }
+      ons.getScriptPage().onInit = function() {
+        // タスクを更新する
+        $('#updateTask').on('click', async e => {
+          const title = $('#title').val();
+          const date = $('#date').val();
+          const body = $('#body').val();
+          try {
+            updateTask(title, date, body);
+            $('#nav')[0].popPage();
+          } catch (e) {
+            ons.notification.alert('タスクの更新に失敗しました');
+          }
+        })
+      }
+    })();
   </script>
 </ons-page>
